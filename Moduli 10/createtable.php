@@ -2,7 +2,7 @@
 
 
     $host = "localhost";
-    $db = "challenge";
+    $db = "testenes1";
     $user = "root";
     $pass = "";
 
