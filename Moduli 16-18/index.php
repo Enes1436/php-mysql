@@ -1,3 +1,49 @@
+<?php
+
+include_once('config.php');
+
+if(isset($_POST['submit'])){
+
+    $name = $_POST['emri'];
+    $surname = $_POST['surname'];
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+
+   
+    if(empty($name) || empty($surname) || empty($username) || empty($email) || empty($password) || empty($confirm_password)){
+        echo "You have not filled in all the fields. Try again.";
+    } 
+    else {
+
+       
+        if($password !== $confirm_password){
+            echo "Passwords do not match!";
+            exit;
+        }
+
+      
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+        $sql = "INSERT INTO users(name, surname, username, email, password) 
+                VALUES (:name, :surname, :username, :email, :password)";
+
+        $insertsql = $connect->prepare($sql);
+
+        $insertsql->bindParam(':name', $name);
+        $insertsql->bindParam(':surname', $surname);
+        $insertsql->bindParam(':username', $username);
+        $insertsql->bindParam(':email', $email);
+        $insertsql->bindParam(':password', $hashed_password);
+
+        $insertsql->execute();
+
+        header("Location: login.php");
+        exit;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +53,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <body>
-   
+    <?php include('header.php') ?>
 <section class="vh-100" style="background-color: #eee;">
   <div class="container h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
@@ -74,7 +120,7 @@
                   </div>
 
                   <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                    <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg">Register</button>
+                    <button  type="sumbmit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg">Register</button>
                   </div>
 
                 </form>
@@ -98,7 +144,7 @@
 
 
 
-
+<?php include('footer.php')?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>
